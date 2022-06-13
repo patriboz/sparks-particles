@@ -1,24 +1,6 @@
 import * as THREE from 'three';
 import metaversefile from 'metaversefile';
 
-
-
-
-import {
-  Group,
-  Scene,
-  MeshStandardMaterial,
-  PlaneBufferGeometry,
-  PointLight,
-  DoubleSide,
-  Mesh,
-  Vector4,
-  Vector3,
-  Color,
-  AdditiveBlending,
-  TextureLoader,
-  Clock
-} from "three";
 import {
   Bezier, ColorRange, ConstantValue,
   IntervalValue, PiecewiseBezier, ColorOverLife,
@@ -73,7 +55,7 @@ class TrailDemo {
   }
 
   initTrailEffect(index) {
-      const group = new Group();
+      const group = new THREE.Group();
 
       const beam = new ParticleSystem(this.batchRenderer, {
           duration: 1,
@@ -81,7 +63,7 @@ class TrailDemo {
           startLife: new IntervalValue(0.8, 1.4),
           startSpeed: new IntervalValue(10, 15),
           startSize: new ConstantValue(0.2),
-          startColor: new ColorRange(new Vector4(1, 0.585716, 0.1691176, 1), new Vector4(1, 1, 1, 1)),
+          startColor: new ColorRange(new THREE.Vector4(1, 0.585716, 0.1691176, 1), new THREE.Vector4(1, 1, 1, 1)),
           worldSpace: true,
 
           maxParticle: 10,
@@ -96,7 +78,7 @@ class TrailDemo {
 
           shape: new ConeEmitter({radius: 0.1, angle: 1}),
           texture: this.texture,
-          blending: AdditiveBlending,
+          blending: THREE.AdditiveBlending,
           renderMode: RenderMode.Trail,
           rendererEmitterSettings: {
               startLength: new ConstantValue(20),
@@ -108,8 +90,8 @@ class TrailDemo {
       });
       beam.emitter.name = 'beam';
       beam.addBehavior(new SizeOverLife(new PiecewiseBezier([[new Bezier(1, 0.95, 0.75, 0), 0]])));
-      beam.addBehavior(new ColorOverLife(new ColorRange(new Vector4(1, 1, 1, 1), new Vector4(0, 0, 0, 1))));
-      beam.addBehavior(new ApplyForce(new Vector3(0, -1, 0), new ConstantValue(20)));
+      beam.addBehavior(new ColorOverLife(new ColorRange(new THREE.Vector4(1, 1, 1, 1), new THREE.Vector4(0, 0, 0, 1))));
+      beam.addBehavior(new ApplyForce(new THREE.Vector3(0, -1, 0), new ConstantValue(20)));
       beam.emitter.rotation.x = - Math.PI / 2;
       group.add(beam.emitter);
 
@@ -121,19 +103,19 @@ class TrailDemo {
 
   initScene(scene) {
       this.scene = scene;
-      this.scene.background = new Color(0);
-      const geo = new PlaneBufferGeometry(2000, 2000, 8, 8);
-      const mat = new MeshStandardMaterial({color: 0x222222, side: DoubleSide});
-      const plane = new Mesh(geo, mat);
+      this.scene.background = new THREE.Color(0);
+      const geo = new THREE.PlaneBufferGeometry(2000, 2000, 8, 8);
+      const mat = new THREE.MeshStandardMaterial({color: 0x222222, side: THREE.DoubleSide});
+      const plane = new THREE.Mesh(geo, mat);
       this.scene.add(plane);
       plane.position.set(0, -10, 0);
       plane.lookAt(camera.position);
 
-      const light = new PointLight(0xffffff, 1, 300);
+      const light = new THREE.PointLight(0xffffff, 1, 300);
       light.position.set(0, 20, 0);
       this.scene.add(light);
 
-      this.texture = new TextureLoader().load("https://patriboz.github.io/spark-particles/assets/textures/texture1.png", (texture) => {
+      this.texture = new THREE.TextureLoader().load("https://patriboz.github.io/spark-particles/assets/textures/texture1.png", (texture) => {
           this.texture.name = "textures/texture1.png";
           this.batchRenderer = new BatchedParticleRenderer();
           this.scene.add(this.batchRenderer);
@@ -158,7 +140,7 @@ export default () => {
   let sparks = new TrailDemo();
   sparks.initScene(app);
 
-  clock = new Clock();
+  clock = new THREE.Clock();
   
 
   useFrame(({ timeDiff, timestamp }) => {
